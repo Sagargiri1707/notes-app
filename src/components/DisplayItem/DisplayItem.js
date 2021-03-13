@@ -1,26 +1,37 @@
 import React, { useContext } from "react";
 import { DataContext } from "../../context/context";
 import Alert from "../Alert/Alert";
+import Search from "../Search/Search";
 import DisplayStyles from "./DisplayItem.module.css";
 function DisplayItem(props) {
-  const { items,errors,RemoveError,DeleteTask } = useContext(DataContext);
+  const {
+    items,
+    errors,
+    RemoveError,
+    DeleteTask,
+    setModalData,
+    changeEditing,
+    searchData
+  } = useContext(DataContext);
 
+  function showError() {
+    setTimeout(() => {
+      RemoveError();
+    }, 1500);
 
-  function showError(){
-    setTimeout(()=>{
-      RemoveError()
-    },1500)
-
-    return (<Alert text={errors.text}></Alert>)
-
+    return <Alert text={errors.text}></Alert>;
   }
-
+  const EditData = (id, data) => {
+    changeEditing(true);
+    setModalData(data);
+  };
 
   return (
     <div>
-      {errors.text?showError():<></>}
+      {errors.text ? showError() : <></>}
+      <Search/>
       <ul className="collection">
-        {items.map((item) => (
+        {searchData.map((item) => (
           <li
             className={`${DisplayStyles.items} collection-item avatar`}
             key={item.id}
@@ -33,18 +44,20 @@ function DisplayItem(props) {
                 className="circle"
               />
               <span className="title">{item.title}</span>
-              <p>{item.item}</p>
+              <p>{item.agenda}</p>
             </span>
             <span className={`${DisplayStyles.buttonWrapper} right`}>
               <button
-                className={`${DisplayStyles.buttonSpace} btn waves-effect waves-light btn-small`}
+                data-target="modal1"
+                onClick={() => EditData(item.id, item)}
+                className={`${DisplayStyles.buttonSpace} modal-trigger btn waves-effect waves-light btn-small`}
               >
                 {" "}
                 Edit
               </button>
               <button
                 className={`${DisplayStyles.buttonSpace} btn waves-effect waves-light btn-small`}
-                onClick={()=>DeleteTask(item.id)}
+                onClick={() => DeleteTask(item.id)}
               >
                 {" "}
                 Delete
@@ -52,7 +65,7 @@ function DisplayItem(props) {
             </span>
           </li>
         ))}
-        {items.length===0?<>GO On Add Some Tasks</>:""}
+        {items.length === 0 ? <>GO On Add Some Tasks</> : ""}
       </ul>
     </div>
   );
