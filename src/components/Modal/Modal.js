@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import M from "materialize-css";
 import { DataContext } from "../../context/context";
 function Modal(props) {
