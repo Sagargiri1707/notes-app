@@ -2,36 +2,34 @@ const { createContext, useReducer } = require("react");
 const { reducer } = require("./reducer");
 const initialState = {
   items: [],
-  errors: { text: "" } ,
-  isEditing:false,
-  modalData:{
-    title:"",
-    id:'',
-    agenda:""
+  errors: { text: "" },
+  isEditing: false,
+  modalData: {
+    title: "",
+    id: "",
+    agenda: "",
   },
-  searchQuery:"",
-  searchData:[]
+  searchQuery: "",
+  searchData: [],
 };
-const TitleMap=new Map()
+const TitleMap = new Map();
 const DataContext = createContext(initialState);
 
- function ContextProvider({ children }) {
+function ContextProvider({ children }) {
   console.log(reducer);
   const [state, dispatch] = useReducer(reducer, initialState);
-  
+
   const DeleteTask = (id) => {
-    
-    var item=state.items.filter(a=>a.id===id)
-    TitleMap.delete(item[0].title) 
-    
-     dispatch({ 
+    var item = state.items.filter((a) => a.id === id);
+    TitleMap.delete(item[0].title);
+
+    dispatch({
       type: "DELETE_TASK",
       payload: id,
     });
   };
 
-  const AddTask = (  ) => {
-    
+  const AddTask = () => {
     if (TitleMap.has(state.modalData.title)) {
       dispatch({
         type: "ADD_ERROR",
@@ -39,7 +37,7 @@ const DataContext = createContext(initialState);
       });
     } else {
       TitleMap.set(state.modalData.title, 1);
-      
+
       dispatch({
         type: "ADD_TASK",
         payload: {
@@ -55,50 +53,48 @@ const DataContext = createContext(initialState);
     dispatch({
       type: "CLEAR_ERROR",
     });
-  }; 
-  const setModalData=(data)=>{
+  };
+  const setModalData = (data) => {
     dispatch({
-      type:"MODAL_DATA",
-      payload:data
-    })
+      type: "MODAL_DATA",
+      payload: data,
+    });
+  };
+  const editData = (id, data) => {
+    dispatch({
+      type: "EDIT_DATA",
+      payload: { id, data },
+    });
+  };
+  function changeEditing(val) {
+    dispatch({
+      type: "IS_EDITING",
+      payload: val,
+    });
   }
-  const editData=(id,data)=>{
-     
+  function setSearchQuery(data) {
     dispatch({
-      type:"EDIT_DATA",
-      payload:{id,data}
-    })
-  }
-  function changeEditing(val){
-    dispatch({
-      type:"IS_EDITING",
-      payload:val
-    })
-  }
-  function setSearchQuery(data){
-    dispatch({
-      type:"SET_SEARCH_QUERY",
-      payload:data
-    })
+      type: "SET_SEARCH_QUERY",
+      payload: data,
+    });
   }
   return (
     <DataContext.Provider
       value={{
         items: state.items,
         DataToEdit: state.DataToEdit,
-        modalData:state.modalData,
+        modalData: state.modalData,
+        searchData: state.searchData,
+        searchQuery: state.searchQuery,
+        isEditing: state.isEditing,
+        errors: state.errors,
         setModalData,
         AddTask,
         DeleteTask,
         RemoveError,
-        editData,  
+        editData,
         changeEditing,
-        setSearchQuery, 
-        searchData:state.searchData,
-        searchQuery:state.searchQuery,
-
-        isEditing:state.isEditing,
-        errors: state.errors,
+        setSearchQuery,
       }}
     >
       {children}

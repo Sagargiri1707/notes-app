@@ -7,7 +7,8 @@ export  function reducer (state, action) {
     case "CLEAR_ERROR":
       return {...state,errors:{text:""}}
     case "DELETE_TASK":
-      return {...state,items:state.items.filter(item=>item.id!==action.payload)}
+      const eleemtns=state.items.filter(item=>item.id!==action.payload)
+      return {...state,items:eleemtns,searchData:eleemtns}
     case "MODAL_DATA":
       return {...state ,modalData:action.payload}
     case "EDIT_DATA":

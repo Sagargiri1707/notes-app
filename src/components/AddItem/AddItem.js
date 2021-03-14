@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Suspense, useContext, useEffect, useState } from "react";
 import M from "materialize-css";
-import { DataContext } from "../../context/context";
-import Modal from "../Modal/Modal";
+const Modal=React.lazy(()=>import("../Modal/Modal"));
 function AddItem(props) {
 
   useEffect(() => {
@@ -17,11 +16,12 @@ function AddItem(props) {
         >
           <i className="material-icons">add</i>
         </button>
-        <Modal/>
+        <Suspense fallback={<div>loading</div>}>
+        <Modal/></Suspense>
       </div>
      
     </>
   );
 }
 
-export default AddItem;
+export default React.memo(AddItem);
